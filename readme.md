@@ -1,4 +1,15 @@
-# bypass leihuoqiming
+# bypass雷火齐鸣
 
 
-# 
+# 用法
+
+## 执行命令用法
+
+
+## 反弹shell用法
+
+
+## 端口映射用法
+
+
+## 构造jsp用法
