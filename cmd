@@ -12,4 +12,4 @@ function execCmd(cmd) {
         return 'error';
     }
 }
-execCmd('%cmd%');
+execCmd("%cmd%");
